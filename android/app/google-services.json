@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1064984674253",
+    "firebase_url": "https://dailybiographies-a5d7a.firebaseio.com",
+    "project_id": "dailybiographies-a5d7a",
+    "storage_bucket": "dailybiographies-a5d7a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1064984674253:android:6e536f4a8283756c938e84",
+        "android_client_info": {
+          "package_name": "cecilrhodes.dailybio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1064984674253-e8o0p98brkpo8edg0hjndm1jvir6jj5g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNgEjdX6fiK9d57wqHyV5u5pEMoN-nN1g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1064984674253-e8o0p98brkpo8edg0hjndm1jvir6jj5g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
