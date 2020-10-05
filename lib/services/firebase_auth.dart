@@ -2,10 +2,23 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dailybio/services/firebase_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+
+// Is user logged in or not.
+bool loggedIn = false;
 
 class AuthService with ChangeNotifier {
   FirebaseAuth _auth = FirebaseAuth.instance;
   User user;
+
+  //Google object configurations.
+  GoogleSignIn _googleSignIn = GoogleSignIn(
+    scopes: [
+      'email',
+      'https://www.googleapis.com/auth/contacts.readonly',
+    ],
+  );
 
   // Create Anonymous account
   signUpAnonymously() async {
@@ -29,6 +42,68 @@ class AuthService with ChangeNotifier {
     } else {
       signUpAnonymously();
     }
+    notifyListeners();
+  }
+
+  //Sign in with Google.
+
+  signInGoogle() async {
+    try {
+      var google_user = await _googleSignIn.signIn();
+      user = User(
+          uid: google_user.id,
+          email: google_user.email,
+          nickname: google_user.displayName);
+
+      loggedIn = true;
+    } catch (error) {
+      print(error);
+    }
+    notifyListeners();
+  }
+
+  registerEmail(String email, String password, String name) async {
+    try {
+      var firebaseUser = await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      user = User(email: email, uid: firebaseUser.user.uid, nickname: name);
+      loggedIn = true;
+    } catch (error) {
+      print(error);
+    }
+    notifyListeners();
+  }
+
+  //Sign in with email and password.
+
+  logInEmail(String email, String password, String name) async {
+    String errorMessage;
+    try {
+      var firebaseUser = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      user = User(email: email, uid: firebaseUser.user.uid, nickname: name);
+      loggedIn = true;
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case 'null':
+          errorMessage = 'null';
+          break;
+        case 'user-not-found':
+          errorMessage = 'user-not-found';
+          break;
+        default:
+          errorMessage = "An undefined Error happened.";
+      }
+      print(errorMessage);
+    }
+    notifyListeners();
+  }
+
+  // To log out from all accounts.
+
+  logOut() async {
+    await _auth.signOut();
+    loggedIn = false;
   }
 
   getLikedBios() async {
@@ -37,7 +112,7 @@ class AuthService with ChangeNotifier {
         .doc(user.uid)
         .get(GetOptions(source: Source.server))
         .then((value) => value.data()['liked_biographies']);
-    print(liked_bios);
+
     user.liked_biographies = liked_bios;
     notifyListeners();
   }
@@ -47,16 +122,16 @@ class AuthService with ChangeNotifier {
       'liked_biographies': user.liked_biographies,
     });
 
-    print(user.liked_biographies);
     notifyListeners();
   }
 }
 
 class User {
+  String nickname;
   String uid;
   String email;
 
-  User({this.uid, this.email});
+  User({this.uid, this.email, this.nickname});
 
   var liked_biographies = [];
 }

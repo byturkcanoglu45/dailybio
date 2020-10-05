@@ -1,5 +1,6 @@
 import 'package:dailybio/models/Bio.dart';
 import 'package:dailybio/services/firebase_auth.dart';
+import 'package:dailybio/widgets/BioDrawer.dart';
 import 'package:dailybio/widgets/PersistentHeader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -47,7 +48,7 @@ class _BiographyState extends State<Biography> {
   void checkOffSet() {
     controller.addListener(() {
       setState(() {
-        controller.offset > 1000 ? watchset = true : watchset = false;
+        controller.offset > 650 ? watchset = true : watchset = false;
       });
     });
   }
@@ -62,7 +63,9 @@ class _BiographyState extends State<Biography> {
       builder: (context, user_provider, child) {
         return Scaffold(
           drawerEnableOpenDragGesture: false,
-          drawer: Drawer(),
+          drawer: Drawer(
+            child: BioDrawer(),
+          ),
           backgroundColor: Colors.white,
           body: Container(
             child: CustomScrollView(
@@ -97,8 +100,8 @@ class _BiographyState extends State<Biography> {
 
                 //Auto size header
                 SliverPersistentHeader(
-                  //floating: true,
-                  pinned: true,
+                  floating: true,
+                  pinned: false,
                   delegate: PersistentHeader(
                       width: deviceWidth,
                       releaseDate: release_date ?? widget.bio.getReleaseDate(),
@@ -142,7 +145,6 @@ class _BiographyState extends State<Biography> {
                                           : Colors.black,
                                     ),
                                     onPressed: () {
-                                      print(widget.bio.isLiked);
                                       if (widget.bio.isLiked) {
                                         widget.bio.likes--;
                                         widget.bio.isLiked = false;

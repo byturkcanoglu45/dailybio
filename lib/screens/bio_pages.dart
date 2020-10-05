@@ -11,7 +11,11 @@ class BioPages extends StatefulWidget {
   _BioPagesState createState() => _BioPagesState();
 }
 
-//Create user.
+//Page numbers and indexs.
+int count_page;
+
+//Page controller to controll page builder.
+PageController pageController = PageController();
 
 class _BioPagesState extends State<BioPages> {
   @override
@@ -38,8 +42,10 @@ class _BioPagesState extends State<BioPages> {
             child: FutureBuilder(
                 future: firebaseService.collectionReference.get(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                  count_page = snapshot.data.size;
                   if (snapshot.hasData) {
                     return PageView.builder(
+                        controller: pageController,
                         itemCount: snapshot.data.size ?? 0,
                         itemBuilder: (context, index) {
                           return Biography(

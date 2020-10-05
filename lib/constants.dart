@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
 String month_cover(int month) {
-  print(month);
   switch (month) {
     case 1:
       return 'Ocak';
