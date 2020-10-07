@@ -1,3 +1,4 @@
+import 'package:dailybio/screens/bio_lists.dart';
 import 'package:dailybio/services/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,9 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => AuthService()),
+        ChangeNotifierProvider(
+          create: (context) => AuthService(),
+        ),
       ],
       child: MaterialApp(
         initialRoute: 'bios',
@@ -24,6 +27,7 @@ void main() async {
           'login': (context) => LoginScreen(),
           'register': (context) => RegisterScreen(),
           'bios': (context) => BioPages(),
+          'bio_lists': (context) => BioLists(),
         },
       ),
     ),

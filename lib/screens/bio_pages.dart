@@ -9,19 +9,28 @@ import 'package:provider/provider.dart';
 class BioPages extends StatefulWidget {
   @override
   _BioPagesState createState() => _BioPagesState();
+
+  BioPages({this.initialPage});
+  final initialPage;
 }
 
 //Page numbers and indexs.
-int count_page;
+int count_page = 0;
 
 //Page controller to controll page builder.
-PageController pageController = PageController();
+PageController pageController;
 
 class _BioPagesState extends State<BioPages> {
   @override
   void initState() {
     super.initState();
     signIn();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    pageController.dispose();
   }
 
   //The service that takes data from database.
@@ -31,6 +40,8 @@ class _BioPagesState extends State<BioPages> {
 
   signIn() async {
     await Provider.of<AuthService>(context, listen: false).signInAnonymously();
+    if (Provider.of<AuthService>(context, listen: false).auth.currentUser ==
+        null) {}
   }
 
   @override
@@ -42,8 +53,10 @@ class _BioPagesState extends State<BioPages> {
             child: FutureBuilder(
                 future: firebaseService.collectionReference.get(),
                 builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                  count_page = snapshot.data.size;
                   if (snapshot.hasData) {
+                    count_page = snapshot.data.size;
+                    pageController = PageController(
+                        initialPage: widget.initialPage ?? count_page);
                     return PageView.builder(
                         controller: pageController,
                         itemCount: snapshot.data.size ?? 0,
@@ -58,11 +71,14 @@ class _BioPagesState extends State<BioPages> {
                               text: snapshot.data.docs[index].get('text'),
                               picture: snapshot.data.docs[index].get('picture'),
                               index: snapshot.data.docs[index].get('index'),
-                              likes: snapshot.data.docs[index].get('likes'),
                               isLiked: provider.user.liked_biographies.contains(
-                                      snapshot.data.docs[index].get('index'))
+                                snapshot.data.docs[index].get('index'),
+                              )
                                   ? true
                                   : false,
+                              likes: snapshot.data.docs[index].get('likes'),
+                              source: snapshot.data.docs[index].get('source'),
+                              quotes: snapshot.data.docs[index].get('quotes'),
                             ),
                           );
                         });

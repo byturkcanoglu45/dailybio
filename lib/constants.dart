@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 String month_cover(int month) {
   switch (month) {
@@ -45,3 +47,5 @@ String month_cover(int month) {
 
 const IconData heart_empty = IconData(0xe800);
 const IconData heart = IconData(0xe801);
+
+TextStyle kGoogleFont = GoogleFonts.sourceSansPro(color: Colors.black);

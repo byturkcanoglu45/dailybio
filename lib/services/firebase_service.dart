@@ -7,6 +7,9 @@ class FirebaseService {
 
   CollectionReference userReference =
       FirebaseFirestore.instance.collection('users');
+  
+  CollectionReference likesReference =
+      FirebaseFirestore.instance.collection('likes');
 
   retriveFromData() async {
     await collectionReference.get().then((QuerySnapshot querySnapshot) {

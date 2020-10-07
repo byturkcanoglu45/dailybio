@@ -9,7 +9,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 bool loggedIn = false;
 
 class AuthService with ChangeNotifier {
-  FirebaseAuth _auth = FirebaseAuth.instance;
+  FirebaseAuth auth = FirebaseAuth.instance;
   User user;
 
   //Google object configurations.
@@ -22,7 +22,7 @@ class AuthService with ChangeNotifier {
 
   // Create Anonymous account
   signUpAnonymously() async {
-    var firebaseUser = await _auth.signInAnonymously();
+    var firebaseUser = await auth.signInAnonymously();
     user = User(uid: firebaseUser.user.uid);
     FirebaseService().userReference.doc(user.uid).set(
       {'liked_biographies': user.liked_biographies},
@@ -33,8 +33,8 @@ class AuthService with ChangeNotifier {
 
   // Sign in with current user.
   signInAnonymously() async {
-    if (_auth.currentUser != null) {
-      var firebaseUser = await _auth.currentUser;
+    if (auth.currentUser != null) {
+      var firebaseUser = await auth.currentUser;
       user = User(uid: firebaseUser.uid);
 
       getLikedBios();
@@ -64,7 +64,7 @@ class AuthService with ChangeNotifier {
 
   registerEmail(String email, String password, String name) async {
     try {
-      var firebaseUser = await _auth.createUserWithEmailAndPassword(
+      var firebaseUser = await auth.createUserWithEmailAndPassword(
           email: email, password: password);
       user = User(email: email, uid: firebaseUser.user.uid, nickname: name);
       loggedIn = true;
@@ -79,7 +79,7 @@ class AuthService with ChangeNotifier {
   logInEmail(String email, String password, String name) async {
     String errorMessage;
     try {
-      var firebaseUser = await _auth.signInWithEmailAndPassword(
+      var firebaseUser = await auth.signInWithEmailAndPassword(
           email: email, password: password);
       user = User(email: email, uid: firebaseUser.user.uid, nickname: name);
       loggedIn = true;
@@ -102,7 +102,7 @@ class AuthService with ChangeNotifier {
   // To log out from all accounts.
 
   logOut() async {
-    await _auth.signOut();
+    await auth.signOut();
     loggedIn = false;
   }
 

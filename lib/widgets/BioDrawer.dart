@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:dailybio/screens/bio_pages.dart';
 import 'package:dailybio/services/firebase_auth.dart';
 import 'package:provider/provider.dart';
+import 'package:dailybio/screens/bio_pages.dart';
 
 class BioDrawer extends StatefulWidget {
   @override
@@ -63,13 +64,22 @@ class _BioDrawerState extends State<BioDrawer> {
           ),
           ListTile(
             onTap: () {
-              pageController.jumpToPage(count_page);
-              Navigator.pop(context);
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BioPages(
+                    initialPage: count_page,
+                  ),
+                ),
+              );
             },
             leading: Icon(FontAwesomeIcons.sun),
             title: Text('Bugün'),
           ),
           ListTile(
+            onTap: () {
+              Navigator.popAndPushNamed(context, 'bio_lists');
+            },
             leading: Icon(FontAwesomeIcons.archive),
             title: Text('Arşiv'),
           ),

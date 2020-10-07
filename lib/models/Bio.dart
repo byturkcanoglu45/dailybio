@@ -4,24 +4,33 @@ import 'package:dailybio/services/firebase_service.dart';
 
 class Bio {
   Timestamp releaseDate;
-  String text, heroName, dates, picture;
-  int likes, index;
+  String text, heroName, dates, picture, source, profile_photo, honour;
+  int index;
+  int likes;
   bool isLiked;
-  Bio(
-      {this.releaseDate,
-      this.heroName,
-      this.dates,
-      this.text,
-      this.picture,
-      this.index,
-      this.likes,
-      this.isLiked});
+  List quotes = [];
+
+  Bio({
+    this.releaseDate,
+    this.heroName,
+    this.dates,
+    this.text,
+    this.picture,
+    this.index,
+    this.likes,
+    this.isLiked,
+    this.source,
+    this.quotes,
+    this.profile_photo,
+    this.honour,
+  });
 
   String getReleaseDate() {
     var rday = releaseDate.toDate().day.toString();
     var rmonth = month_cover(releaseDate.toDate().month);
+    var ryear = releaseDate.toDate().year.toString();
 
-    return rday + ' ' + rmonth;
+    return rday + ' ' + rmonth + ' ' + ryear;
   }
 
   changeLikes(Bio bio) async {
