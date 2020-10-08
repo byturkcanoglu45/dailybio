@@ -180,7 +180,7 @@ class _BiographyState extends State<Biography> {
                                 child: Text(
                                   widget.bio.text,
                                   style: GoogleFonts.sourceSerifPro(
-                                      color: Colors.black, fontSize: 18),
+                                      color: Colors.black, fontSize: font_size),
                                 ),
                               ),
                             ],
@@ -235,18 +235,13 @@ class _BiographyState extends State<Biography> {
                     (BuildContext context, bool innerBoxScrolled) {
                   return [
                     SliverAppBar(
+                      iconTheme: IconThemeData(color: Colors.brown),
                       flexibleSpace: FlexibleSpaceBar(
                         collapseMode: CollapseMode.parallax,
                         background: PreferredSize(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: Colors.blue[300],
-                              borderRadius: BorderRadius.circular(6.0),
-                              image: DecorationImage(
-                                image: NetworkImage(widget.bio.picture),
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+                          child: Image(
+                            fit: BoxFit.cover,
+                            image: NetworkImage(widget.bio.picture),
                           ),
                           preferredSize: Size.fromHeight(300),
                         ),

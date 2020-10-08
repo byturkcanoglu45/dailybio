@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:rate_my_app/rate_my_app.dart';
 
 String month_cover(int month) {
   switch (month) {
@@ -49,3 +50,14 @@ const IconData heart_empty = IconData(0xe800);
 const IconData heart = IconData(0xe801);
 
 TextStyle kGoogleFont = GoogleFonts.sourceSansPro(color: Colors.black);
+
+double font_size = 18;
+
+RateMyApp rateMyApp = RateMyApp(
+  preferencesPrefix: 'rateMyApp_',
+  minDays: 5,
+  minLaunches: 10,
+  remindDays: 5,
+  remindLaunches: 10,
+  googlePlayIdentifier: 'mehmetfurkan.smart_note',
+);
