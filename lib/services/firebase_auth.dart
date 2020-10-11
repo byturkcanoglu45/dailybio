@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dailybio/services/DatabaseService.dart';
 import 'package:dailybio/services/firebase_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -31,11 +32,13 @@ class AuthService with ChangeNotifier {
     print('User Created');
   }
 
-  // Sign in with current user.
+  // Sign in with current user if not logged in.
   signInAnonymously() async {
     if (auth.currentUser != null) {
-      var firebaseUser = await auth.currentUser;
-      user = User(uid: firebaseUser.uid);
+      var firebaseUser = auth.currentUser;
+      user = User(
+        uid: firebaseUser.uid,
+      );
 
       getLikedBios();
       print('User logged in');
@@ -51,10 +54,14 @@ class AuthService with ChangeNotifier {
     try {
       var google_user = await _googleSignIn.signIn();
       user = User(
-          uid: google_user.id,
-          email: google_user.email,
-          nickname: google_user.displayName);
-
+        uid: google_user.id,
+        email: google_user.email,
+        nickname: google_user.displayName,
+      );
+      FirebaseService().userReference.doc(user.uid).set({
+        'nickname': user.nickname,
+        'liked_biographies': user.liked_biographies,
+      });
       loggedIn = true;
     } catch (error) {
       print(error);
@@ -63,39 +70,39 @@ class AuthService with ChangeNotifier {
   }
 
   registerEmail(String email, String password, String name) async {
-    try {
-      var firebaseUser = await auth.createUserWithEmailAndPassword(
-          email: email, password: password);
-      user = User(email: email, uid: firebaseUser.user.uid, nickname: name);
-      loggedIn = true;
-    } catch (error) {
-      print(error);
-    }
+    var firebaseUser = await auth.createUserWithEmailAndPassword(
+        email: email, password: password);
+    firebaseUser.user.updateProfile(displayName: name);
+    print('auth' + auth.currentUser.toString());
+    print('firebase : ' + firebaseUser.user.toString());
+
+    user = User(
+        email: email,
+        uid: firebaseUser.user.uid,
+        nickname: firebaseUser.user.displayName);
+    FirebaseService().userReference.doc(user.uid).set({
+      'liked_biographies': user.liked_biographies,
+    });
+    loggedIn = true;
+    await DatabaseService().saveSettings();
+
     notifyListeners();
   }
 
   //Sign in with email and password.
 
-  logInEmail(String email, String password, String name) async {
-    String errorMessage;
-    try {
-      var firebaseUser = await auth.signInWithEmailAndPassword(
-          email: email, password: password);
-      user = User(email: email, uid: firebaseUser.user.uid, nickname: name);
-      loggedIn = true;
-    } on FirebaseAuthException catch (e) {
-      switch (e.code) {
-        case 'null':
-          errorMessage = 'null';
-          break;
-        case 'user-not-found':
-          errorMessage = 'user-not-found';
-          break;
-        default:
-          errorMessage = "An undefined Error happened.";
-      }
-      print(errorMessage);
-    }
+  logInEmail(String email, String password) async {
+    var firebaseUser =
+        await auth.signInWithEmailAndPassword(email: email, password: password);
+
+    user = User(
+        email: email,
+        uid: firebaseUser.user.uid,
+        nickname: firebaseUser.user.displayName);
+    getLikedBios();
+    loggedIn = true;
+    await DatabaseService().saveSettings();
+
     notifyListeners();
   }
 
@@ -104,16 +111,21 @@ class AuthService with ChangeNotifier {
   logOut() async {
     await auth.signOut();
     loggedIn = false;
+    await DatabaseService().saveSettings();
   }
 
   getLikedBios() async {
-    var liked_bios = await FirebaseService()
-        .userReference
-        .doc(user.uid)
-        .get(GetOptions(source: Source.server))
-        .then((value) => value.data()['liked_biographies']);
+    try {
+      var liked_bios = await FirebaseService()
+          .userReference
+          .doc(user.uid)
+          .get(GetOptions(source: Source.server))
+          .then((value) => value.data()['liked_biographies']);
 
-    user.liked_biographies = liked_bios;
+      user.liked_biographies = liked_bios;
+    } catch (e) {
+      print(e);
+    }
     notifyListeners();
   }
 
@@ -121,7 +133,7 @@ class AuthService with ChangeNotifier {
     FirebaseService().userReference.doc(user.uid).update({
       'liked_biographies': user.liked_biographies,
     });
-
+    print(user.liked_biographies.runtimeType);
     notifyListeners();
   }
 }
@@ -133,5 +145,10 @@ class User {
 
   User({this.uid, this.email, this.nickname});
 
-  var liked_biographies = [];
+  List<int> liked_biographies = [];
+
+  toStringList() {
+    liked_biographies.map((e) => e.toString());
+    List<String> user_list = [this.nickname, this.uid, this.email];
+  }
 }

@@ -6,6 +6,8 @@ import 'package:dailybio/services/firebase_auth.dart';
 import 'package:dailybio/services/firebase_service.dart';
 import 'package:dailybio/widgets/BioDrawer.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:meet_network_image/meet_network_image.dart';
 import 'package:provider/provider.dart';
 import 'package:dailybio/screens/bio_pages.dart';
 
@@ -25,7 +27,7 @@ class _BioListsState extends State<BioLists> {
           drawer: Drawer(
             child: BioDrawer(),
           ),
-          backgroundColor: Color(0xffF7F8F9),
+          backgroundColor: Color(0xffecf4f3),
           body: NestedScrollView(
             headerSliverBuilder: (context, innerBoxScrolled) {
               return [
@@ -47,11 +49,15 @@ class _BioListsState extends State<BioLists> {
                   ),
                   expandedHeight: 100,
                   flexibleSpace: FlexibleSpaceBar(
-                    background: Image(
-                      fit: BoxFit.cover,
-                      image: AssetImage('assets/storage.jpg'),
+                    background: Container(
+                      margin: EdgeInsets.all(6.0),
+                      child: Image(
+                        fit: BoxFit.cover,
+                        image: AssetImage('assets/storage.jpg'),
+                      ),
                     ),
                   ),
+                  backgroundColor: Color(0xffecf4f3),
                 ),
               ];
             },

@@ -20,26 +20,34 @@ class _BioDrawerState extends State<BioDrawer> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Color(0xffecf4f3),
       child: ListView(
         children: [
           DrawerHeader(
+            decoration: BoxDecoration(
+              color: Color(0xff006a71),
+            ),
             child: ListView(
               children: [
                 CircleAvatar(
                   radius: 45,
-                  backgroundColor: Color(0xFF94D6F7),
+                  backgroundColor: Color(0xFFecf4f3),
                   child: Image(
                     fit: BoxFit.cover,
                     image: AssetImage('assets/profile_logo.png'),
                   ),
                 ),
                 loggedIn
-                    ? ListView(
+                    ? Wrap(
                         children: [
                           ListTile(
-                            leading: Icon(FontAwesomeIcons.signInAlt),
                             title: Text(
-                                'Hoşgeldin ${Provider.of<AuthService>(context, listen: false).user.nickname}'),
+                              'Hoşgeldin ${Provider.of<AuthService>(context, listen: false).auth.currentUser.displayName ?? 'Misafir'}',
+                              style: kGoogleFont.copyWith(
+                                fontSize: 18,
+                                color: Color(0xffecf4f3),
+                              ),
+                            ),
                           ),
                           ListTile(
                             onTap: () {
@@ -48,8 +56,17 @@ class _BioDrawerState extends State<BioDrawer> {
 
                               setState(() {});
                             },
-                            leading: Icon(FontAwesomeIcons.signInAlt),
-                            title: Text('Çıkış yap'),
+                            leading: Icon(
+                              FontAwesomeIcons.signInAlt,
+                              color: Color(0xffecf4f3),
+                            ),
+                            title: Text(
+                              'Çıkış yap',
+                              style: kGoogleFont.copyWith(
+                                fontSize: 18,
+                                color: Color(0xffecf4f3),
+                              ),
+                            ),
                           ),
                         ],
                       )
@@ -57,8 +74,17 @@ class _BioDrawerState extends State<BioDrawer> {
                         onTap: () {
                           Navigator.popAndPushNamed(context, 'login');
                         },
-                        leading: Icon(FontAwesomeIcons.signInAlt),
-                        title: Text('Giriş yap veya kayıt ol'),
+                        leading: Icon(
+                          FontAwesomeIcons.signInAlt,
+                          color: Color(0xffecf4f3),
+                        ),
+                        title: Text(
+                          'Giriş yap veya kayıt ol',
+                          style: kGoogleFont.copyWith(
+                            fontSize: 18,
+                            color: Color(0xffecf4f3),
+                          ),
+                        ),
                       ),
               ],
             ),

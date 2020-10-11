@@ -20,9 +20,10 @@ class PersistentHeader extends SliverPersistentHeaderDelegate {
     return FittedBox(
       fit: BoxFit.cover,
       child: Container(
+        margin: EdgeInsets.all(6.0),
         width: width * 9.5 / 10,
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: Color(0xffecf4f3),
         ),
         child: Column(
           children: [

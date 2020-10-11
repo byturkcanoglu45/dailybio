@@ -5,8 +5,10 @@ import 'package:dailybio/widgets/BioDrawer.dart';
 import 'package:dailybio/widgets/PersistentHeader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:meet_network_image/meet_network_image.dart';
 import 'package:provider/provider.dart';
 
 class Biography extends StatefulWidget {
@@ -17,7 +19,8 @@ class Biography extends StatefulWidget {
   Biography({this.bio});
 }
 
-class _BiographyState extends State<Biography> {
+class _BiographyState extends State<Biography>
+    with SingleTickerProviderStateMixin {
   // Relase date editer.
   String setReleaseDate() {
     if (widget.bio.releaseDate.toDate().day == DateTime.now().day)
@@ -49,92 +52,98 @@ class _BiographyState extends State<Biography> {
         return Scaffold(
           drawerEnableOpenDragGesture: false,
           drawer: Drawer(
-            child: BioDrawer(),
+            child: Container(
+              color: Colors.white,
+              width: 20,
+              height: 10,
+              child: BioDrawer(),
+            ),
           ),
-          backgroundColor: Colors.white,
+          backgroundColor: Color(0xffecf4f3),
           body: Container(
             child: NestedScrollView(
                 body: SingleChildScrollView(
                   child: Column(
                     children: [
-                      Align(
+                      //Like and share bar
+                      Container(
                         alignment: Alignment.center,
-                        child: Container(
-                          height: 70,
-                          width: deviceWidth * 9.5 / 10,
-                          decoration: BoxDecoration(
-                            color: Colors.green[200],
-                            borderRadius: BorderRadius.all(
-                              Radius.zero,
-                            ),
+                        margin: EdgeInsets.all(6.0),
+                        height: 70,
+                        width: deviceWidth * 8.5 / 10,
+                        decoration: BoxDecoration(
+                          color: Color(0xff006a71),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(16.0),
                           ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Row(
-                                children: [
-                                  IconButton(
-                                      icon: widget.bio.isLiked
-                                          ? FaIcon(
-                                              FontAwesomeIcons.solidHeart,
-                                              size: 22,
-                                              color: Colors.red,
-                                            )
-                                          : FaIcon(
-                                              FontAwesomeIcons.heartBroken,
-                                              size: 22,
-                                              color: Colors.white,
-                                            ),
-                                      onPressed: () {
-                                        if (widget.bio.isLiked) {
-                                          widget.bio.likes--;
-                                          widget.bio.isLiked = false;
-                                          widget.bio.changeLikes(widget.bio);
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Row(
+                              children: [
+                                IconButton(
+                                    icon: widget.bio.isLiked
+                                        ? FaIcon(
+                                            FontAwesomeIcons.solidHeart,
+                                            size: 22,
+                                            color: Color(0xffff7e67),
+                                          )
+                                        : FaIcon(
+                                            FontAwesomeIcons.heartBroken,
+                                            size: 22,
+                                            color: Colors.white,
+                                          ),
+                                    onPressed: () {
+                                      if (widget.bio.isLiked) {
+                                        widget.bio.likes--;
+                                        widget.bio.isLiked = false;
+                                        widget.bio.changeLikes(widget.bio);
 
+                                        user_provider.user.liked_biographies
+                                            .remove(widget.bio.index);
+
+                                        user_provider.updateLikedBiographies();
+                                        print('updated');
+                                      } else if (!widget.bio.isLiked) {
+                                        widget.bio.likes++;
+                                        widget.bio.isLiked = true;
+                                        widget.bio.changeLikes(widget.bio);
+
+                                        if (!user_provider
+                                            .user.liked_biographies
+                                            .contains(widget.bio.index)) {
                                           user_provider.user.liked_biographies
-                                              .remove(widget.bio.index);
-
-                                          user_provider
-                                              .updateLikedBiographies();
-                                          print('updated');
-                                        } else if (!widget.bio.isLiked) {
-                                          widget.bio.likes++;
-                                          widget.bio.isLiked = true;
-                                          widget.bio.changeLikes(widget.bio);
-
-                                          if (!user_provider
-                                              .user.liked_biographies
-                                              .contains(widget.bio.index)) {
-                                            user_provider.user.liked_biographies
-                                                .add(widget.bio.index);
-                                          }
-                                          user_provider
-                                              .updateLikedBiographies();
-                                          print('updated');
+                                              .add(widget.bio.index);
                                         }
-                                        setState(() {});
-                                      }),
-                                  Text(
-                                    '${widget.bio.likes}',
-                                    style:
-                                        GoogleFonts.sourceSansPro(fontSize: 17),
-                                  )
-                                ],
-                              ),
-                              IconButton(
-                                  icon: FaIcon(
-                                    FontAwesomeIcons.shareAlt,
-                                    size: 22,
-                                    color: Colors.white,
-                                  ),
-                                  onPressed: () {}),
-                            ],
-                          ),
+                                        user_provider.updateLikedBiographies();
+                                        print('updated');
+                                      }
+                                      setState(() {});
+                                    }),
+                                Text(
+                                  '${widget.bio.likes}',
+                                  style:
+                                      GoogleFonts.sourceSansPro(fontSize: 17),
+                                )
+                              ],
+                            ),
+                            IconButton(
+                                icon: FaIcon(
+                                  FontAwesomeIcons.shareAlt,
+                                  size: 22,
+                                  color: Color(0xffff7e67),
+                                ),
+                                onPressed: () {}),
+                          ],
                         ),
                       ),
                       Container(
-                        color: Colors.white,
+                        decoration: BoxDecoration(
+                          color: Color(0xffecf4f3),
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
                         width: deviceWidth * 9.5 / 10,
                         child: ExpansionTile(
                           childrenPadding: EdgeInsets.all(6.0),
@@ -154,13 +163,13 @@ class _BiographyState extends State<Biography> {
                               'Kişinin Sözleri',
                               style: GoogleFonts.sourceSansPro(
                                 fontSize: 18,
-                                color: Colors.red,
+                                color: Color(0xffff7e67),
                                 fontWeight: FontWeight.w600,
                                 letterSpacing: 1.0,
                               ),
                             ),
                           ),
-                          backgroundColor: Colors.white,
+                          backgroundColor: Color(0xffecf4f3),
                         ),
                       ),
                       SizedBox(
@@ -170,7 +179,7 @@ class _BiographyState extends State<Biography> {
                         child: AnimatedContainer(
                           duration: Duration(milliseconds: 3000),
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: Color(0xffecf4f3),
                           ),
                           width: deviceWidth * 9.5 / 10,
                           child: Column(
@@ -223,6 +232,7 @@ class _BiographyState extends State<Biography> {
                               text: widget.bio.getReleaseDate(),
                               style: kGoogleFont.copyWith(
                                 fontSize: 18,
+                                color: Color(0xffff7e67),
                               ),
                             ),
                           ],
@@ -239,14 +249,27 @@ class _BiographyState extends State<Biography> {
                       flexibleSpace: FlexibleSpaceBar(
                         collapseMode: CollapseMode.parallax,
                         background: PreferredSize(
-                          child: Image(
-                            fit: BoxFit.cover,
-                            image: NetworkImage(widget.bio.picture),
+                          child: Container(
+                            color: Color(0xffecf4f3),
+                            margin: EdgeInsets.all(8.0),
+                            child: MeetNetworkImage(
+                              fit: BoxFit.cover,
+                              imageUrl: widget.bio.picture,
+                              loadingBuilder: (context) => Center(
+                                child: SpinKitPouringHourglass(
+                                  color: Color(0xffff7e67),
+                                  size: 125,
+                                ),
+                              ),
+                              errorBuilder: (context, e) => Center(
+                                child: Text('Error appear!'),
+                              ),
+                            ),
                           ),
                           preferredSize: Size.fromHeight(300),
                         ),
                       ),
-                      backgroundColor: Colors.blue[300],
+                      backgroundColor: Color(0xffecf4f3),
                       snap: false,
                       elevation: 200,
                       floating: true,

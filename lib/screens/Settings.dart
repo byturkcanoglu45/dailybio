@@ -23,12 +23,12 @@ class _SettingsPageState extends State<SettingsPage> {
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      backgroundColor: Color(0xfff8d89c),
+      backgroundColor: Color(0xffecf4f3),
       drawer: Drawer(
         child: BioDrawer(),
       ),
       appBar: AppBar(
-        backgroundColor: Color(0xfff8d89c),
+        backgroundColor: Color(0xffecf4f3),
         elevation: 0,
         iconTheme: IconThemeData(color: Colors.black),
         title: Text(
@@ -45,6 +45,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 margin: EdgeInsets.only(top: 10),
                 alignment: Alignment.topCenter,
                 child: CircleAvatar(
+                  backgroundColor: Color(0xff006a71),
                   radius: 50,
                   child: Image(
                     image: AssetImage('assets/profile_logo.png'),
@@ -56,7 +57,7 @@ class _SettingsPageState extends State<SettingsPage> {
                       margin: EdgeInsets.only(top: deviceHeight * 1.9 / 10),
                       alignment: Alignment.topCenter,
                       child: Text(
-                        'Hoşgeldin ${Provider.of<AuthService>(context).user.nickname}',
+                        'Hoşgeldin ${Provider.of<AuthService>(context, listen: false).auth.currentUser.displayName ?? 'Misafir'}',
                         style: kGoogleFont.copyWith(
                           fontSize: 22,
                           color: Colors.black,
@@ -76,8 +77,8 @@ class _SettingsPageState extends State<SettingsPage> {
                 width: deviceWidth * 5 / 10,
                 height: deviceHeight * 1.0 / 10,
                 decoration: BoxDecoration(
-                  color: Colors.redAccent,
-                  border: Border.all(color: Colors.red),
+                  color: Color(0xffff7e67),
+                  border: Border.all(color: Color(0xffff7e67)),
                 ),
                 margin: EdgeInsets.fromLTRB(deviceWidth * 2.5 / 10,
                     deviceHeight * 2.5 / 10, 0, deviceHeight * 1 / 10),
@@ -139,7 +140,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 width: deviceWidth * 5 / 10,
                 height: deviceHeight * 1.0 / 10,
                 decoration: BoxDecoration(
-                  color: Colors.green,
+                  color: Color(0xff006a71),
                   border: Border.all(color: Colors.green),
                 ),
                 margin: EdgeInsets.fromLTRB(deviceWidth * 2.5 / 10,
@@ -175,18 +176,18 @@ class _SettingsPageState extends State<SettingsPage> {
                         height: 30,
                         width: 50,
                         decoration: BoxDecoration(
-                          color: Colors.red,
+                          color: Color(0xffff7e67),
                           borderRadius: BorderRadius.all(
                             Radius.circular(10),
                           ),
                           border: Border.all(
-                            color: Colors.red,
+                            color: Color(0xffff7e67),
                             style: BorderStyle.solid,
                           ),
                         ),
                         child: GestureDetector(
                           onTap: () {
-                            font_size = 17;
+                            font_size = 16;
                             setState(() {});
                             DatabaseService().saveSettings();
                           },
@@ -194,7 +195,7 @@ class _SettingsPageState extends State<SettingsPage> {
                             child: Text(
                               'Küçük',
                               style: kGoogleFont.copyWith(
-                                  color: font_size == 17
+                                  color: font_size == 16
                                       ? Colors.brown
                                       : Colors.white),
                             ),
@@ -205,12 +206,41 @@ class _SettingsPageState extends State<SettingsPage> {
                         height: 30,
                         width: 50,
                         decoration: BoxDecoration(
-                          color: Colors.purple,
+                          color: Color(0xff68b0ab),
                           borderRadius: BorderRadius.all(
                             Radius.circular(10),
                           ),
                           border: Border.all(
-                            color: Colors.purple,
+                            color: Color(0xff68b0ab),
+                            style: BorderStyle.solid,
+                          ),
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            font_size = 18;
+                            setState(() {});
+                            DatabaseService().saveSettings();
+                          },
+                          child: Center(
+                              child: Text(
+                            'Orta',
+                            style: kGoogleFont.copyWith(
+                                color: font_size == 18
+                                    ? Colors.brown
+                                    : Colors.white),
+                          )),
+                        ),
+                      ),
+                      Container(
+                        height: 30,
+                        width: 50,
+                        decoration: BoxDecoration(
+                          color: Color(0xff006a71),
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                          border: Border.all(
+                            color: Color(0xff006a71),
                             style: BorderStyle.solid,
                           ),
                         ),
@@ -222,38 +252,9 @@ class _SettingsPageState extends State<SettingsPage> {
                           },
                           child: Center(
                               child: Text(
-                            'Orta',
-                            style: kGoogleFont.copyWith(
-                                color: font_size == 20
-                                    ? Colors.brown
-                                    : Colors.white),
-                          )),
-                        ),
-                      ),
-                      Container(
-                        height: 30,
-                        width: 50,
-                        decoration: BoxDecoration(
-                          color: Colors.blue,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                          border: Border.all(
-                            color: Colors.blue,
-                            style: BorderStyle.solid,
-                          ),
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            font_size = 22;
-                            setState(() {});
-                            DatabaseService().saveSettings();
-                          },
-                          child: Center(
-                              child: Text(
                             'Büyük',
                             style: kGoogleFont.copyWith(
-                                color: font_size == 22
+                                color: font_size == 20
                                     ? Colors.brown
                                     : Colors.white),
                           )),

@@ -11,14 +11,17 @@ class IDCart extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 10.0,
+      color: Color(0xffecf4f3),
       margin: EdgeInsets.fromLTRB(12.0, 6.0, 12.0, 8.0),
       child: ListTile(
         onTap: () {
+          print(this.bio.index);
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => BioPages(
-                initialPage: bio.index,
+                initialPage: this.bio.index,
               ),
             ),
           );
@@ -33,24 +36,24 @@ class IDCart extends StatelessWidget {
           children: [
             Text(
               bio.heroName.toUpperCase(),
-              style: kGoogleFont.copyWith(
-                color: Colors.black,
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
+              style: kGoogleFont2.copyWith(
+                color: Color(0xff006a71),
+                fontSize: 24,
+                fontWeight: FontWeight.w500,
               ),
             ),
             Text(
               bio.honour,
               style: kGoogleFont.copyWith(
-                color: Colors.blue,
-                fontSize: 18,
+                color: Color(0xff68b0ab),
+                fontSize: 20,
               ),
             ),
             Text(
               bio.dates,
               style: kGoogleFont.copyWith(
-                color: Colors.redAccent,
-                fontSize: 18,
+                color: Color(0xffff7e67),
+                fontSize: 20,
                 fontStyle: FontStyle.italic,
               ),
             ),

@@ -1,7 +1,11 @@
 import 'package:dailybio/services/firebase_auth.dart';
+import 'package:dailybio/widgets/SnackBar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -9,63 +13,62 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   String email, password, nickname;
+  String errorMessage;
+  double deviceHeight;
+  bool isSeems = false;
   @override
   Widget build(BuildContext context) {
+    deviceHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Colors.cyan[50],
+      key: _scaffoldKey,
+      appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Color(0xffff7e67),
+        ),
+        centerTitle: true,
+        elevation: 0,
+        backgroundColor: Color(0xffecf4f3),
+        title: Text(
+          'Giriş Yap',
+          style: GoogleFonts.sourceSansPro(
+            fontSize: 25,
+            color: Color(0xffff7e67),
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
+      backgroundColor: Color(0xffecf4f3),
       body: SingleChildScrollView(
         child: SafeArea(
-          child: Center(
-              child: Container(
+          child: Container(
             margin: EdgeInsets.all(10.0),
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
-                  alignment: Alignment.topCenter,
-                  child: Text(
-                    'Giriş Yap',
-                    style: GoogleFonts.sourceSansPro(
-                      fontSize: 25,
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
                 SizedBox(
-                  height: 12.0,
+                  height: deviceHeight * 1.5 / 10,
                 ),
                 ListTile(
                   title: Form(
                     child: TextField(
-                      onChanged: (nameValue) {
-                        nickname = nameValue;
-                      },
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        hintText: 'Kullanıcı Adı',
-                      ),
-                    ),
-                  ),
-                  leading: Text(
-                    'Adınız:',
-                    style: GoogleFonts.sourceSansPro(
-                      fontSize: 17,
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 12.0,
-                ),
-                ListTile(
-                  title: Form(
-                    child: TextField(
+                      cursorColor: Color(0xff006a71),
                       onChanged: (emailValue) {
                         email = emailValue;
                       },
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xff006a71),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xff006a71),
+                          ),
+                        ),
                         hintText: 'Email',
                       ),
                     ),
@@ -74,6 +77,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     'Email: ',
                     style: GoogleFonts.sourceSansPro(
                       fontSize: 17,
+                      color: Color(0xffff7e67),
                     ),
                   ),
                 ),
@@ -85,16 +89,42 @@ class _LoginScreenState extends State<LoginScreen> {
                     'Şifre:   ',
                     style: GoogleFonts.sourceSansPro(
                       fontSize: 17,
+                      color: Color(0xffff7e67),
                     ),
                   ),
                   title: Form(
                     child: TextField(
+                      cursorColor: Color(0xff006a71),
                       onChanged: (passwordValue) {
                         password = passwordValue;
                       },
-                      obscureText: true,
+                      obscureText: !isSeems,
                       decoration: InputDecoration(
-                        border: OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                            icon: AnimatedContainer(
+                              duration: Duration(seconds: 1),
+                              child: Icon(
+                                isSeems
+                                    ? FontAwesomeIcons.eye
+                                    : FontAwesomeIcons.eyeSlash,
+                                color: Color(0xff006a71),
+                              ),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                isSeems = !isSeems;
+                              });
+                            }),
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xff006a71),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xff006a71),
+                          ),
+                        ),
                         hintText: 'Şifre',
                       ),
                     ),
@@ -111,13 +141,36 @@ class _LoginScreenState extends State<LoginScreen> {
                           Radius.elliptical(12, 8),
                         )),
                     child: FlatButton(
-                      onPressed: () {
-                        if (email != null &&
-                            password != null &&
-                            nickname != null) {
-                          Provider.of<AuthService>(context, listen: false)
-                              .logInEmail(email, password, nickname);
-                          Navigator.popAndPushNamed(context, 'bios');
+                      onPressed: () async {
+                        if (email != null && password != null) {
+                          try {
+                            await Provider.of<AuthService>(context,
+                                    listen: false)
+                                .logInEmail(email, password);
+                          } catch (e) {
+                            switch (e.code) {
+                              case 'invalid-email':
+                                errorMessage =
+                                    "Yanlış veya geçersiz email adresi girdiniz";
+                                break;
+                              case 'user-not-found':
+                                errorMessage = 'Kullanıcı Bulunamadı';
+                                break;
+                              case 'wrong-password':
+                                errorMessage = 'Yanlış şifre';
+                                break;
+                              case 'user-disabled':
+                                errorMessage = 'Email geçerli değil';
+                                break;
+                              default:
+                                errorMessage =
+                                    "Bilinmeyen bir hata meydana geldi.";
+                            }
+                            snack_bar(errorMessage, _scaffoldKey);
+                            if (loggedIn) {
+                              Navigator.popAndPushNamed(context, 'bios');
+                            }
+                          }
                         } else {
                           print('email ve passwordu boş bırakmayınız.');
                           // TODO : Create snackbar to check email and password.
@@ -127,6 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         'Giriş yap',
                         style: GoogleFonts.sourceSansPro(
                           fontSize: 20,
+                          color: Colors.white,
                         ),
                       ),
                     ),
@@ -135,6 +189,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   height: 12.0,
                 ),
+                /*
                 ListTile(
                   onTap: () {
                     Provider.of<AuthService>(context, listen: false)
@@ -150,6 +205,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 SizedBox(
                   height: 12.0,
                 ),
+                
                 ListTile(
                   leading: Image(
                     image: NetworkImage(
@@ -159,7 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 SizedBox(
                   height: 12.0,
-                ),
+                ), */
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -171,7 +227,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Text(
                           'Şifremi unuttum',
                           style: GoogleFonts.sourceSansPro(
-                              fontSize: 18, color: Colors.red[800]),
+                            fontSize: 18,
+                            color: Color(0xffff7e67),
+                          ),
                         ),
                       ),
                     ),
@@ -180,12 +238,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       alignment: Alignment.bottomRight,
                       child: MaterialButton(
                         onPressed: () {
-                          Navigator.popAndPushNamed(context, 'bios');
+                          Navigator.popAndPushNamed(context, 'register');
                         },
                         child: Text(
-                          'İptal',
+                          'Kayıt ol',
                           style: GoogleFonts.sourceSansPro(
-                              fontSize: 18, color: Colors.red[800]),
+                            fontSize: 18,
+                            color: Color(0xffff7e67),
+                          ),
                         ),
                       ),
                     ),
@@ -193,7 +253,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ],
             ),
-          )),
+          ),
         ),
       ),
     );

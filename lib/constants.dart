@@ -50,8 +50,9 @@ const IconData heart_empty = IconData(0xe800);
 const IconData heart = IconData(0xe801);
 
 TextStyle kGoogleFont = GoogleFonts.sourceSansPro(color: Colors.black);
+TextStyle kGoogleFont2 = GoogleFonts.sourceSerifPro(color: Colors.black);
 
-double font_size = 18;
+double font_size = 20;
 
 RateMyApp rateMyApp = RateMyApp(
   preferencesPrefix: 'rateMyApp_',

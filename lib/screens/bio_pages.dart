@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dailybio/models/Bio.dart';
 import 'package:dailybio/screens/biography.dart';
@@ -7,10 +6,12 @@ import 'package:dailybio/services/DatabaseService.dart';
 import 'package:dailybio/services/firebase_auth.dart';
 import 'package:dailybio/services/firebase_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:rate_my_app/rate_my_app.dart';
-
 import '../constants.dart';
+import '../main.dart';
 
 class BioPages extends StatefulWidget {
   @override
@@ -31,6 +32,7 @@ class _BioPagesState extends State<BioPages> {
   void initState() {
     super.initState();
     signIn();
+    showDailyAtTime();
     rateMyApp.init().then((_) {
       if (rateMyApp.shouldOpenDialog) {
         rateMyApp.showRateDialog(
@@ -81,13 +83,13 @@ class _BioPagesState extends State<BioPages> {
   //The service that takes data from database.
   FirebaseService firebaseService = FirebaseService();
 
-  //Sign in each time when app opened.
-
+  //Sign in when app open.
   signIn() async {
     await Provider.of<AuthService>(context, listen: false).signInAnonymously();
-    await DatabaseService().getSettings();
+    print(Provider.of<AuthService>(context, listen: false).auth.currentUser);
     if (Provider.of<AuthService>(context, listen: false).auth.currentUser ==
         null) {}
+    await DatabaseService().getSettings();
   }
 
   @override
@@ -130,8 +132,9 @@ class _BioPagesState extends State<BioPages> {
                         });
                   } else {
                     return Center(
-                      child: CircularProgressIndicator(
-                        backgroundColor: Colors.amber,
+                      child: SpinKitCubeGrid(
+                        duration: Duration(seconds: 2),
+                        color: Color(0xff006a71),
                       ),
                     );
                   }
@@ -139,6 +142,28 @@ class _BioPagesState extends State<BioPages> {
           ),
         );
       },
+    );
+  }
+
+  Future<void> showDailyAtTime() async {
+    var time = Time(6, 25, 0);
+    var androidChannelSpecifics = AndroidNotificationDetails(
+      'DailyBio 4',
+      'Günlük Biyografi 4',
+      "",
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+    var iosChannelSpecifics = IOSNotificationDetails();
+    var platformChannelSpecifics = NotificationDetails(
+        android: androidChannelSpecifics, iOS: iosChannelSpecifics);
+    await flutterLocalNotificationsPlugin.showDailyAtTime(
+      0,
+      'Günlük Biyografi',
+      'Bügün için biyografi hazır',
+      time,
+      NotificationDetails(
+          android: androidChannelSpecifics, iOS: iosChannelSpecifics),
     );
   }
 }
