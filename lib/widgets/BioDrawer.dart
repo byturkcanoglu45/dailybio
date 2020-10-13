@@ -158,7 +158,7 @@ class _BioDrawerState extends State<BioDrawer> {
           ),
           ListTile(
             onTap: () async {
-              String url = 'mailto:bymehmet45tr@gmail.com';
+              String url = 'mailto:crdailybiography@gmail.com';
               if (await canLaunch(url)) {
                 await launch(url);
               }
@@ -168,7 +168,7 @@ class _BioDrawerState extends State<BioDrawer> {
           ),
           ListTile(
             onTap: () {
-              Navigator.popAndPushNamed(context, 'settings');
+              Navigator.pushNamed(context, 'settings');
             },
             leading: Icon(FontAwesomeIcons.cogs),
             title: Text('Ayarlar'),

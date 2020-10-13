@@ -5,11 +5,13 @@ import 'package:dailybio/widgets/BioDrawer.dart';
 import 'package:dailybio/widgets/PersistentHeader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:meet_network_image/meet_network_image.dart';
 import 'package:provider/provider.dart';
+import 'package:dailybio/main.dart';
 
 class Biography extends StatefulWidget {
   @override
@@ -135,7 +137,9 @@ class _BiographyState extends State<Biography>
                                   size: 22,
                                   color: Color(0xffff7e67),
                                 ),
-                                onPressed: () {}),
+                                onPressed: () {
+                                  widget.bio.shareBiyography(context);
+                                }),
                           ],
                         ),
                       ),

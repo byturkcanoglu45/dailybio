@@ -54,6 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ListTile(
                   title: Form(
                     child: TextField(
+                      keyboardType: TextInputType.emailAddress,
                       cursorColor: Color(0xff006a71),
                       onChanged: (emailValue) {
                         email = emailValue;
@@ -144,9 +145,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () async {
                         if (email != null && password != null) {
                           try {
+                            print(loggedIn);
                             await Provider.of<AuthService>(context,
                                     listen: false)
                                 .logInEmail(email, password);
+                            if (loggedIn) {
+                              Navigator.popAndPushNamed(context, 'bios');
+                            }
                           } catch (e) {
                             switch (e.code) {
                               case 'invalid-email':
@@ -167,9 +172,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                     "Bilinmeyen bir hata meydana geldi.";
                             }
                             snack_bar(errorMessage, _scaffoldKey);
-                            if (loggedIn) {
-                              Navigator.popAndPushNamed(context, 'bios');
-                            }
                           }
                         } else {
                           print('email ve passwordu boş bırakmayınız.');

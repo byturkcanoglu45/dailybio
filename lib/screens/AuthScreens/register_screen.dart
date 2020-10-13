@@ -86,6 +86,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ListTile(
                   title: Form(
                     child: TextField(
+                      keyboardType: TextInputType.emailAddress,
                       cursorColor: Color(0xff006a71),
                       onChanged: (emailValue) {
                         email = emailValue;
@@ -227,6 +228,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           try {
                             Provider.of<AuthService>(context, listen: false)
                                 .registerEmail(email, password, nickname);
+                            if (loggedIn) {
+                              Navigator.popAndPushNamed(context, 'bios');
+                            }
                           } catch (e) {
                             switch (e.code) {
                               case 'email-already-in-use':
@@ -244,9 +248,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     "Bilinmeyen bir hata meydana geldi.";
                             }
                             snack_bar(errorMessage, _scaffoldKey);
-                            if (loggedIn) {
-                              Navigator.popAndPushNamed(context, 'bios');
-                            }
                           }
                         } else if (password != second_password) {
                           print('Şifreler aynı değil !');

@@ -13,7 +13,7 @@ class DatabaseService {
   getSettings() async {
     _prefs = await SharedPreferences.getInstance();
 
-    font_size = _prefs.getDouble('font_size');
+    font_size = _prefs.getDouble('font_size') ?? 20;
     loggedIn = _prefs.getBool('loggedIn') ?? false;
   }
 }

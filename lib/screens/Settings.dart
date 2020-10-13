@@ -148,7 +148,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 alignment: Alignment.center,
                 child: ListTile(
                   onTap: () async {
-                    String url = 'mailto:bymehmet45tr@gmail.com';
+                    String url = 'mailto:crdailybiography@gmail.com';
                     if (await canLaunch(url)) {
                       await launch(url);
                     }
@@ -187,7 +187,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                         child: GestureDetector(
                           onTap: () {
-                            font_size = 16;
+                            font_size = 18;
                             setState(() {});
                             DatabaseService().saveSettings();
                           },
@@ -195,9 +195,10 @@ class _SettingsPageState extends State<SettingsPage> {
                             child: Text(
                               'Küçük',
                               style: kGoogleFont.copyWith(
-                                  color: font_size == 16
+                                  color: font_size == 18
                                       ? Colors.brown
-                                      : Colors.white),
+                                      : Colors.white,
+                                  fontSize: 16),
                             ),
                           ),
                         ),
@@ -217,7 +218,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                         child: GestureDetector(
                           onTap: () {
-                            font_size = 18;
+                            font_size = 20;
                             setState(() {});
                             DatabaseService().saveSettings();
                           },
@@ -225,9 +226,10 @@ class _SettingsPageState extends State<SettingsPage> {
                               child: Text(
                             'Orta',
                             style: kGoogleFont.copyWith(
-                                color: font_size == 18
+                                color: font_size == 20
                                     ? Colors.brown
-                                    : Colors.white),
+                                    : Colors.white,
+                                fontSize: 16),
                           )),
                         ),
                       ),
@@ -246,7 +248,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         ),
                         child: GestureDetector(
                           onTap: () {
-                            font_size = 20;
+                            font_size = 23;
                             setState(() {});
                             DatabaseService().saveSettings();
                           },
@@ -254,9 +256,10 @@ class _SettingsPageState extends State<SettingsPage> {
                               child: Text(
                             'Büyük',
                             style: kGoogleFont.copyWith(
-                                color: font_size == 20
+                                color: font_size == 23
                                     ? Colors.brown
-                                    : Colors.white),
+                                    : Colors.white,
+                                fontSize: 16),
                           )),
                         ),
                       ),

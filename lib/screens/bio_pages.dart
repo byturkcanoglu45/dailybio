@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dailybio/models/Bio.dart';
 import 'package:dailybio/screens/biography.dart';
+import 'package:dailybio/services/AdvertServices.dart';
 import 'package:dailybio/services/DatabaseService.dart';
 import 'package:dailybio/services/firebase_auth.dart';
 import 'package:dailybio/services/firebase_service.dart';
@@ -31,8 +32,9 @@ class _BioPagesState extends State<BioPages> {
   @override
   void initState() {
     super.initState();
-    signIn();
     showDailyAtTime();
+    signIn();
+    AdvertServices().showIntersitial();
     rateMyApp.init().then((_) {
       if (rateMyApp.shouldOpenDialog) {
         rateMyApp.showRateDialog(
@@ -87,10 +89,22 @@ class _BioPagesState extends State<BioPages> {
   signIn() async {
     await Provider.of<AuthService>(context, listen: false).signInAnonymously();
     print(Provider.of<AuthService>(context, listen: false).auth.currentUser);
-    if (Provider.of<AuthService>(context, listen: false).auth.currentUser ==
-        null) {}
     await DatabaseService().getSettings();
   }
+
+  //To get likes from reference.
+
+  getLikes(int index) async {
+    int likes = await firebaseService.likesReference
+        .get()
+        .then((value) => value.docs[index].get('likes'));
+
+    return likes;
+  }
+
+  Bio biography;
+  int current_reference = 0;
+  String todays_name;
 
   @override
   Widget build(BuildContext context) {
@@ -98,37 +112,44 @@ class _BioPagesState extends State<BioPages> {
       builder: (context, provider, child) {
         return Scaffold(
           body: Container(
-            child: FutureBuilder(
-                future: firebaseService.collectionReference.get(),
-                builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            child: FutureBuilder<List<QuerySnapshot>>(
+                future: Future.wait([
+                  firebaseService.likesReference.get(),
+                  firebaseService.collectionReference.get()
+                ]),
+                builder:
+                    (context, AsyncSnapshot<List<QuerySnapshot>> snapshot) {
                   if (snapshot.hasData) {
-                    count_page = snapshot.data.size;
+                    count_page = snapshot.data[1].size;
                     pageController = PageController(
                         initialPage: widget.initialPage ?? count_page);
                     return PageView.builder(
+                        onPageChanged: (int ind) {},
                         controller: pageController,
-                        itemCount: snapshot.data.size ?? 0,
+                        itemCount: snapshot.data[1].size ?? 0,
                         itemBuilder: (context, index) {
+                          todays_name =
+                              snapshot.data[1].docs[index].get('hero_name');
                           return Biography(
-                            bio: Bio(
-                              dates: snapshot.data.docs[index].get('dates'),
-                              heroName:
-                                  snapshot.data.docs[index].get('hero_name'),
-                              releaseDate:
-                                  snapshot.data.docs[index].get('releaseDate'),
-                              text: snapshot.data.docs[index].get('text'),
-                              picture: snapshot.data.docs[index].get('picture'),
-                              index: snapshot.data.docs[index].get('index'),
-                              isLiked: provider.user.liked_biographies.contains(
-                                snapshot.data.docs[index].get('index'),
-                              )
-                                  ? true
-                                  : false,
-                              likes: snapshot.data.docs[index].get('likes'),
-                              source: snapshot.data.docs[index].get('source'),
-                              quotes: snapshot.data.docs[index].get('quotes'),
-                            ),
-                          );
+                              bio: Bio(
+                            dates: snapshot.data[1].docs[index].get('dates'),
+                            heroName:
+                                snapshot.data[1].docs[index].get('hero_name'),
+                            releaseDate:
+                                snapshot.data[1].docs[index].get('releaseDate'),
+                            text: snapshot.data[1].docs[index].get('text'),
+                            picture:
+                                snapshot.data[1].docs[index].get('picture'),
+                            index: snapshot.data[1].docs[index].get('index'),
+                            isLiked: provider.user.liked_biographies.contains(
+                              snapshot.data[1].docs[index].get('index'),
+                            )
+                                ? true
+                                : false,
+                            source: snapshot.data[1].docs[index].get('source'),
+                            quotes: snapshot.data[1].docs[index].get('quotes'),
+                            likes: snapshot.data[0].docs[index].get('likes'),
+                          ));
                         });
                   } else {
                     return Center(
@@ -146,10 +167,10 @@ class _BioPagesState extends State<BioPages> {
   }
 
   Future<void> showDailyAtTime() async {
-    var time = Time(6, 25, 0);
+    var time = Time(9, 15, 0);
     var androidChannelSpecifics = AndroidNotificationDetails(
-      'DailyBio 4',
-      'Günlük Biyografi 4',
+      'DailyBio',
+      'Günlük Biyografi',
       "",
       importance: Importance.max,
       priority: Priority.high,
@@ -159,8 +180,8 @@ class _BioPagesState extends State<BioPages> {
         android: androidChannelSpecifics, iOS: iosChannelSpecifics);
     await flutterLocalNotificationsPlugin.showDailyAtTime(
       0,
-      'Günlük Biyografi',
-      'Bügün için biyografi hazır',
+      '1Day 1Biography',
+      '${todays_name} Hayat Hikayesi Hazır. 🤓🤓',
       time,
       NotificationDetails(
           android: androidChannelSpecifics, iOS: iosChannelSpecifics),

@@ -80,7 +80,6 @@ class _BioListsState extends State<BioLists> {
                                   releaseDate: snapshot.data.docs[index]
                                       .get('releaseDate'),
                                   index: snapshot.data.docs[index].get('index'),
-                                  likes: snapshot.data.docs[index].get('likes'),
                                   honour:
                                       snapshot.data.docs[index].get('honour'),
                                   profile_photo: snapshot.data.docs[index]

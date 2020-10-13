@@ -115,17 +115,15 @@ class AuthService with ChangeNotifier {
   }
 
   getLikedBios() async {
-    try {
-      var liked_bios = await FirebaseService()
-          .userReference
-          .doc(user.uid)
-          .get(GetOptions(source: Source.server))
-          .then((value) => value.data()['liked_biographies']);
+    var liked_bios = await FirebaseService()
+        .userReference
+        .doc(user.uid)
+        .get(GetOptions(source: Source.server))
+        .then((value) => value.get('liked_biographies'));
 
-      user.liked_biographies = liked_bios;
-    } catch (e) {
-      print(e);
-    }
+    user.liked_biographies = await liked_bios;
+    print(user.liked_biographies);
+
     notifyListeners();
   }
 
@@ -133,7 +131,6 @@ class AuthService with ChangeNotifier {
     FirebaseService().userReference.doc(user.uid).update({
       'liked_biographies': user.liked_biographies,
     });
-    print(user.liked_biographies.runtimeType);
     notifyListeners();
   }
 }
@@ -145,7 +142,7 @@ class User {
 
   User({this.uid, this.email, this.nickname});
 
-  List<int> liked_biographies = [];
+  var liked_biographies = [];
 
   toStringList() {
     liked_biographies.map((e) => e.toString());
