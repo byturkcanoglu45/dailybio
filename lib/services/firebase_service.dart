@@ -10,17 +10,4 @@ class FirebaseService {
 
   CollectionReference likesReference =
       FirebaseFirestore.instance.collection('likes');
-
-  retriveFromData() async {
-    await collectionReference.get().then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.map((element) {
-        Bio(
-            dates: element.data()['dates'],
-            heroName: element.data()['hero_name'],
-            releaseDate: element.data()['releaseDate'],
-            text: element.data()['text']);
-      });
-    });
-    // print(bio_list.length);
-  }
 }

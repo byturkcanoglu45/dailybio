@@ -190,10 +190,16 @@ class _BiographyState extends State<Biography>
                             children: [
                               Container(
                                 padding: EdgeInsets.fromLTRB(8.0, 0, 8.0, 0),
-                                child: Text(
-                                  widget.bio.text,
-                                  style: GoogleFonts.sourceSerifPro(
-                                      color: Colors.black, fontSize: font_size),
+                                child: Column(
+                                  children: [
+                                    for (var block in widget.bio.text)
+                                      Text(
+                                        block + '\n',
+                                        style: GoogleFonts.sourceSerifPro(
+                                            color: Colors.black,
+                                            fontSize: font_size),
+                                      ),
+                                  ],
                                 ),
                               ),
                             ],

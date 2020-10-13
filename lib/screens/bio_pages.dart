@@ -92,18 +92,6 @@ class _BioPagesState extends State<BioPages> {
     await DatabaseService().getSettings();
   }
 
-  //To get likes from reference.
-
-  getLikes(int index) async {
-    int likes = await firebaseService.likesReference
-        .get()
-        .then((value) => value.docs[index].get('likes'));
-
-    return likes;
-  }
-
-  Bio biography;
-  int current_reference = 0;
   String todays_name;
 
   @override
@@ -113,53 +101,52 @@ class _BioPagesState extends State<BioPages> {
         return Scaffold(
           body: Container(
             child: FutureBuilder<List<QuerySnapshot>>(
-                future: Future.wait([
-                  firebaseService.likesReference.get(),
-                  firebaseService.collectionReference.get()
-                ]),
-                builder:
-                    (context, AsyncSnapshot<List<QuerySnapshot>> snapshot) {
-                  if (snapshot.hasData) {
-                    count_page = snapshot.data[1].size;
-                    pageController = PageController(
-                        initialPage: widget.initialPage ?? count_page);
-                    return PageView.builder(
-                        onPageChanged: (int ind) {},
-                        controller: pageController,
-                        itemCount: snapshot.data[1].size ?? 0,
-                        itemBuilder: (context, index) {
-                          todays_name =
-                              snapshot.data[1].docs[index].get('hero_name');
-                          return Biography(
-                              bio: Bio(
-                            dates: snapshot.data[1].docs[index].get('dates'),
-                            heroName:
-                                snapshot.data[1].docs[index].get('hero_name'),
-                            releaseDate:
-                                snapshot.data[1].docs[index].get('releaseDate'),
-                            text: snapshot.data[1].docs[index].get('text'),
-                            picture:
-                                snapshot.data[1].docs[index].get('picture'),
-                            index: snapshot.data[1].docs[index].get('index'),
-                            isLiked: provider.user.liked_biographies.contains(
-                              snapshot.data[1].docs[index].get('index'),
-                            )
-                                ? true
-                                : false,
-                            source: snapshot.data[1].docs[index].get('source'),
-                            quotes: snapshot.data[1].docs[index].get('quotes'),
-                            likes: snapshot.data[0].docs[index].get('likes'),
-                          ));
-                        });
-                  } else {
-                    return Center(
-                      child: SpinKitCubeGrid(
-                        duration: Duration(seconds: 2),
-                        color: Color(0xff006a71),
-                      ),
-                    );
-                  }
-                }),
+              future: Future.wait([
+                firebaseService.likesReference.get(),
+                firebaseService.collectionReference.get()
+              ]),
+              builder: (context, AsyncSnapshot<List<QuerySnapshot>> snapshot) {
+                if (snapshot.hasData) {
+                  count_page = snapshot.data[1].size;
+                  pageController = PageController(
+                      initialPage: widget.initialPage ?? count_page);
+                  return PageView.builder(
+                      onPageChanged: (int ind) {},
+                      controller: pageController,
+                      itemCount: snapshot.data[1].size ?? 0,
+                      itemBuilder: (context, index) {
+                        todays_name =
+                            snapshot.data[1].docs[index].get('hero_name');
+                        return Biography(
+                            bio: Bio(
+                          dates: snapshot.data[1].docs[index].get('dates'),
+                          heroName:
+                              snapshot.data[1].docs[index].get('hero_name'),
+                          releaseDate:
+                              snapshot.data[1].docs[index].get('releaseDate'),
+                          text: snapshot.data[1].docs[index].get('text'),
+                          picture: snapshot.data[1].docs[index].get('picture'),
+                          index: snapshot.data[1].docs[index].get('index'),
+                          isLiked: provider.user.liked_biographies.contains(
+                            snapshot.data[1].docs[index].get('index'),
+                          )
+                              ? true
+                              : false,
+                          source: snapshot.data[1].docs[index].get('source'),
+                          quotes: snapshot.data[1].docs[index].get('quotes'),
+                          likes: snapshot.data[0].docs[index].get('likes'),
+                        ));
+                      });
+                } else {
+                  return Center(
+                    child: SpinKitFadingCircle(
+                      duration: Duration(seconds: 2),
+                      color: Color(0xff006a71),
+                    ),
+                  );
+                }
+              },
+            ),
           ),
         );
       },

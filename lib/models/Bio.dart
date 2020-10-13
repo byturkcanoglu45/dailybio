@@ -6,9 +6,10 @@ import 'package:share/share.dart';
 
 class Bio {
   Timestamp releaseDate;
-  String text, heroName, dates, picture, source, profile_photo, honour;
+  String heroName, dates, picture, source, profile_photo, honour;
   int index;
   int likes;
+  var text;
 
   bool isLiked;
   List quotes = [];
@@ -47,7 +48,7 @@ class Bio {
     try {
       await FirebaseService()
           .likesReference
-          .doc('deneme${bio.index + 2}')
+          .doc('biyography${bio.index}')
           .update(
         {
           'likes': bio.likes,
