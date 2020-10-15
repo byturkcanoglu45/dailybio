@@ -36,6 +36,7 @@ void main() async {
         ),
       ],
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         initialRoute: 'bios',
         routes: {
           'login': (context) => LoginScreen(),

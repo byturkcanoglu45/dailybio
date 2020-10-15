@@ -48,7 +48,7 @@ class Bio {
     try {
       await FirebaseService()
           .likesReference
-          .doc('biyography${bio.index}')
+          .doc('biyography${bio.index + 1}')
           .update(
         {
           'likes': bio.likes,

@@ -53,6 +53,7 @@ TextStyle kGoogleFont = GoogleFonts.sourceSansPro(color: Colors.black);
 TextStyle kGoogleFont2 = GoogleFonts.sourceSerifPro(color: Colors.black);
 
 double font_size = 20;
+int notification_time = 12;
 
 RateMyApp rateMyApp = RateMyApp(
   preferencesPrefix: 'rateMyApp_',
@@ -60,5 +61,5 @@ RateMyApp rateMyApp = RateMyApp(
   minLaunches: 10,
   remindDays: 5,
   remindLaunches: 10,
-  googlePlayIdentifier: 'mehmetfurkan.smart_note',
+  googlePlayIdentifier: 'cecilrhodes.dailybio',
 );

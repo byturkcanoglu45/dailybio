@@ -26,9 +26,9 @@ class _BiographyState extends State<Biography>
   // Relase date editer.
   String setReleaseDate() {
     if (widget.bio.releaseDate.toDate().day == DateTime.now().day)
-      return 'Today';
+      return 'Bugün';
     else if (widget.bio.releaseDate.toDate().day == DateTime.now().day - 1)
-      return 'Yesterday';
+      return 'Dün';
 
     setState(() {});
   }
@@ -40,6 +40,7 @@ class _BiographyState extends State<Biography>
     super.initState();
   }
 
+  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   String release_date;
   double deviceWidth, pixelRatio;
 
@@ -52,15 +53,11 @@ class _BiographyState extends State<Biography>
     return Consumer<AuthService>(
       builder: (context, user_provider, child) {
         return Scaffold(
-          drawerEnableOpenDragGesture: false,
           drawer: Drawer(
-            child: Container(
-              color: Colors.white,
-              width: 20,
-              height: 10,
-              child: BioDrawer(),
-            ),
+            child: BioDrawer(),
           ),
+          key: _scaffoldKey,
+          drawerEnableOpenDragGesture: false,
           backgroundColor: Color(0xffecf4f3),
           body: Container(
             child: NestedScrollView(
@@ -251,10 +248,30 @@ class _BiographyState extends State<Biography>
                     ],
                   ),
                 ),
+
+                //Appbar and persistent header of biography.
+
                 headerSliverBuilder:
                     (BuildContext context, bool innerBoxScrolled) {
                   return [
                     SliverAppBar(
+                      automaticallyImplyLeading: false,
+                      leading: Builder(
+                        builder: (BuildContext context) {
+                          return Container(
+                            margin: EdgeInsets.fromLTRB(12.0, 6, 0, 6),
+                            color: Color(0xffecf4f3),
+                            child: IconButton(
+                              icon: const Icon(FontAwesomeIcons.bars),
+                              onPressed: () {
+                                _scaffoldKey.currentState.openDrawer();
+                              },
+                              tooltip: MaterialLocalizations.of(context)
+                                  .openAppDrawerTooltip,
+                            ),
+                          );
+                        },
+                      ),
                       iconTheme: IconThemeData(color: Colors.brown),
                       flexibleSpace: FlexibleSpaceBar(
                         collapseMode: CollapseMode.parallax,
@@ -263,6 +280,7 @@ class _BiographyState extends State<Biography>
                             color: Color(0xffecf4f3),
                             margin: EdgeInsets.all(8.0),
                             child: MeetNetworkImage(
+                              gaplessPlayback: true,
                               fit: BoxFit.cover,
                               imageUrl: widget.bio.picture,
                               loadingBuilder: (context) => Center(

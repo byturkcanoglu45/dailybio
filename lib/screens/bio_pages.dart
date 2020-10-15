@@ -35,6 +35,7 @@ class _BioPagesState extends State<BioPages> {
     showDailyAtTime();
     signIn();
     AdvertServices().showIntersitial();
+
     rateMyApp.init().then((_) {
       if (rateMyApp.shouldOpenDialog) {
         rateMyApp.showRateDialog(
@@ -92,8 +93,6 @@ class _BioPagesState extends State<BioPages> {
     await DatabaseService().getSettings();
   }
 
-  String todays_name;
-
   @override
   Widget build(BuildContext context) {
     return Consumer<AuthService>(
@@ -111,14 +110,12 @@ class _BioPagesState extends State<BioPages> {
                   pageController = PageController(
                       initialPage: widget.initialPage ?? count_page);
                   return PageView.builder(
-                      onPageChanged: (int ind) {},
-                      controller: pageController,
-                      itemCount: snapshot.data[1].size ?? 0,
-                      itemBuilder: (context, index) {
-                        todays_name =
-                            snapshot.data[1].docs[index].get('hero_name');
-                        return Biography(
-                            bio: Bio(
+                    reverse: true,
+                    controller: pageController,
+                    itemCount: snapshot.data[1].size ?? 0,
+                    itemBuilder: (context, index) {
+                      return Biography(
+                        bio: Bio(
                           dates: snapshot.data[1].docs[index].get('dates'),
                           heroName:
                               snapshot.data[1].docs[index].get('hero_name'),
@@ -135,8 +132,10 @@ class _BioPagesState extends State<BioPages> {
                           source: snapshot.data[1].docs[index].get('source'),
                           quotes: snapshot.data[1].docs[index].get('quotes'),
                           likes: snapshot.data[0].docs[index].get('likes'),
-                        ));
-                      });
+                        ),
+                      );
+                    },
+                  );
                 } else {
                   return Center(
                     child: SpinKitFadingCircle(
@@ -154,7 +153,7 @@ class _BioPagesState extends State<BioPages> {
   }
 
   Future<void> showDailyAtTime() async {
-    var time = Time(9, 15, 0);
+    var time = Time(notification_time, 5, 0);
     var androidChannelSpecifics = AndroidNotificationDetails(
       'DailyBio',
       'Günlük Biyografi',
@@ -168,7 +167,7 @@ class _BioPagesState extends State<BioPages> {
     await flutterLocalNotificationsPlugin.showDailyAtTime(
       0,
       '1Day 1Biography',
-      '${todays_name} Hayat Hikayesi Hazır. 🤓🤓',
+      '${await firebaseService.collectionReference.get().then((value) => value.docs[count_page - 1].get('hero_name'))} Hayat Hikayesi Hazır. 🤓🤓',
       time,
       NotificationDetails(
           android: androidChannelSpecifics, iOS: iosChannelSpecifics),

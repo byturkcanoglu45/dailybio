@@ -7,6 +7,7 @@ class DatabaseService {
   saveSettings() async {
     _prefs = await SharedPreferences.getInstance();
     _prefs.setDouble('font_size', font_size);
+    _prefs.setInt('notification', notification_time);
     _prefs.setBool('loggedIn', loggedIn);
   }
 
@@ -14,6 +15,7 @@ class DatabaseService {
     _prefs = await SharedPreferences.getInstance();
 
     font_size = _prefs.getDouble('font_size') ?? 20;
+    notification_time = _prefs.getInt('notification') ?? 12;
     loggedIn = _prefs.getBool('loggedIn') ?? false;
   }
 }

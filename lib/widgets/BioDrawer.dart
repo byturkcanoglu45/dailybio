@@ -168,7 +168,7 @@ class _BioDrawerState extends State<BioDrawer> {
           ),
           ListTile(
             onTap: () {
-              Navigator.pushNamed(context, 'settings');
+              Navigator.popAndPushNamed(context, 'settings');
             },
             leading: Icon(FontAwesomeIcons.cogs),
             title: Text('Ayarlar'),
