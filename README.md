@@ -1,6 +1,6 @@
 # dailybio
 
-A new Flutter project.
+A Flutter project that is able to service Biographies for each day.
 
 ## Getting Started
 
