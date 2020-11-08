@@ -114,6 +114,7 @@ class _BioPagesState extends State<BioPages> {
                     controller: pageController,
                     itemCount: snapshot.data[1].size ?? 0,
                     itemBuilder: (context, index) {
+                      print("Idsi "+snapshot.data[1].docs[index].id);
                       return Biography(
                         bio: Bio(
                           dates: snapshot.data[1].docs[index].get('dates'),
@@ -167,7 +168,7 @@ class _BioPagesState extends State<BioPages> {
     await flutterLocalNotificationsPlugin.showDailyAtTime(
       0,
       '1Day 1Biography',
-      '${await firebaseService.collectionReference.get().then((value) => value.docs[count_page - 1].get('hero_name'))} Hayat Hikayesi Hazır. 🤓🤓',
+      '${await firebaseService.collectionReference.get().then((value) => value.docs[value.size - 1].get('hero_name'))} Hayat Hikayesi Hazır. 🤓🤓',
       time,
       NotificationDetails(
           android: androidChannelSpecifics, iOS: iosChannelSpecifics),

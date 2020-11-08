@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dailybio/models/Bio.dart';
 import 'package:flutter/material.dart';
 import 'package:dailybio/constants.dart';
@@ -28,7 +29,9 @@ class IDCart extends StatelessWidget {
         },
         leading: CircleAvatar(
           radius: 30,
-          backgroundImage: NetworkImage(bio.profile_photo),
+          backgroundImage: CachedNetworkImageProvider(
+            bio.profile_photo,
+          ),
         ),
         title: Wrap(
           alignment: WrapAlignment.center,

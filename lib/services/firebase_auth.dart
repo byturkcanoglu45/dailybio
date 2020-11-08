@@ -36,6 +36,7 @@ class AuthService with ChangeNotifier {
   signInAnonymously() async {
     if (auth.currentUser != null) {
       var firebaseUser = auth.currentUser;
+
       user = User(
         uid: firebaseUser.uid,
       );

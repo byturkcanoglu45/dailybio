@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dailybio/constants.dart';
 import 'package:dailybio/models/Bio.dart';
 import 'package:dailybio/services/firebase_auth.dart';
@@ -279,18 +280,28 @@ class _BiographyState extends State<Biography>
                           child: Container(
                             color: Color(0xffecf4f3),
                             margin: EdgeInsets.all(8.0),
-                            child: MeetNetworkImage(
-                              gaplessPlayback: true,
+                            // child: MeetNetworkImage(
+                            //   gaplessPlayback: true,
+                            //   fit: BoxFit.cover,
+                            //   imageUrl: widget.bio.picture,
+                            //   loadingBuilder: (context) => Center(
+                            //     child: SpinKitPouringHourglass(
+                            //       color: Color(0xffff7e67),
+                            //       size: 125,
+                            //     ),
+                            //   ),
+                            //   errorBuilder: (context, e) => Center(
+                            //     child: Text('Error appear!'),
+                            //   ),
+                            // ),
+                            child: CachedNetworkImage(
                               fit: BoxFit.cover,
                               imageUrl: widget.bio.picture,
-                              loadingBuilder: (context) => Center(
+                              placeholder: (context, string) => Center(
                                 child: SpinKitPouringHourglass(
                                   color: Color(0xffff7e67),
                                   size: 125,
                                 ),
-                              ),
-                              errorBuilder: (context, e) => Center(
-                                child: Text('Error appear!'),
                               ),
                             ),
                           ),

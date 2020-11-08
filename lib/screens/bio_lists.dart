@@ -6,8 +6,6 @@ import 'package:dailybio/services/firebase_auth.dart';
 import 'package:dailybio/services/firebase_service.dart';
 import 'package:dailybio/widgets/BioDrawer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:meet_network_image/meet_network_image.dart';
 import 'package:provider/provider.dart';
 import 'package:dailybio/screens/bio_pages.dart';
 
@@ -64,21 +62,26 @@ class _BioListsState extends State<BioLists> {
             body: SafeArea(
               child: Container(
                 child: FutureBuilder(
-                    future: firebaseService.collectionReference.get(),
+                    future: firebaseService.collectionReference
+                        .orderBy('releaseDate', descending: true)
+                        .get(),
                     builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-                      if (snapshot.hasData) {
+                      print(snapshot.data.docs);
+                      if (snapshot.hasData &&
+                          snapshot.connectionState == ConnectionState.done) {
+                        print(snapshot.data.docs);
                         return ListView.builder(
                             reverse: false,
                             itemCount: snapshot.data.size,
                             itemBuilder: (context, index) {
                               count_page = snapshot.data.size;
+                              print(count_page);
+
                               return IDCart(
                                 Bio(
                                   dates: snapshot.data.docs[index].get('dates'),
                                   heroName: snapshot.data.docs[index]
                                       .get('hero_name'),
-                                  releaseDate: snapshot.data.docs[index]
-                                      .get('releaseDate'),
                                   index: snapshot.data.docs[index].get('index'),
                                   honour:
                                       snapshot.data.docs[index].get('honour'),
