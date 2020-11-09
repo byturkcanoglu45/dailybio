@@ -145,11 +145,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () async {
                         if (email != null && password != null) {
                           try {
-                            print(loggedIn);
                             await Provider.of<AuthService>(context,
                                     listen: false)
                                 .logInEmail(email, password);
-                            if (loggedIn) {
+                            if (auth.currentUser != null) {
                               Navigator.popAndPushNamed(context, 'bios');
                             }
                           } catch (e) {

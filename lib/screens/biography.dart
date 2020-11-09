@@ -84,46 +84,45 @@ class _BiographyState extends State<Biography>
                             Row(
                               children: [
                                 IconButton(
-                                    icon: widget.bio.isLiked
-                                        ? FaIcon(
-                                            FontAwesomeIcons.solidHeart,
-                                            size: 22,
-                                            color: Color(0xffff7e67),
-                                          )
-                                        : FaIcon(
-                                            FontAwesomeIcons.heartBroken,
-                                            size: 22,
-                                            color: Colors.white,
-                                          ),
-                                    onPressed: () {
-                                      if (widget.bio.isLiked) {
-                                        widget.bio.likes--;
-                                        widget.bio.isLiked = false;
-                                        widget.bio.changeLikes(widget.bio);
-
-                                        user_provider.user.liked_biographies
-                                            .remove(widget.bio.index);
-
-                                        user_provider.updateLikedBiographies();
-                                        print('updated');
-                                      } else if (!widget.bio.isLiked) {
-                                        widget.bio.likes++;
-                                        widget.bio.isLiked = true;
-                                        widget.bio.changeLikes(widget.bio);
-
-                                        if (!user_provider
-                                            .user.liked_biographies
-                                            .contains(widget.bio.index)) {
-                                          user_provider.user.liked_biographies
-                                              .add(widget.bio.index);
-                                        }
-                                        user_provider.updateLikedBiographies();
-                                        print('updated');
+                                  icon: auth.currentUser != null
+                                      ? widget.bio.likes
+                                              .contains(auth.currentUser.uid)
+                                          ? FaIcon(
+                                              FontAwesomeIcons.solidHeart,
+                                              size: 22,
+                                              color: Color(0xffff7e67),
+                                            )
+                                          : FaIcon(
+                                              FontAwesomeIcons.heartBroken,
+                                              size: 22,
+                                              color: Colors.white,
+                                            )
+                                      : FaIcon(
+                                          FontAwesomeIcons.heartBroken,
+                                          size: 22,
+                                          color: Colors.white,
+                                        ),
+                                  onPressed: () {
+                                    if (auth.currentUser != null) {
+                                      if (widget.bio.likes
+                                          .contains(auth.currentUser.uid)) {
+                                        widget.bio.likes
+                                            .remove(auth.currentUser.uid);
+                                        // update likes
+                                        setState(() {});
+                                      } else {
+                                        widget.bio.likes
+                                            .add(auth.currentUser.uid);
+                                        //update likes
+                                        setState(() {});
                                       }
-                                      setState(() {});
-                                    }),
+                                    } else {
+                                      Navigator.pushNamed(context, 'register');
+                                    }
+                                  },
+                                ),
                                 Text(
-                                  '${widget.bio.likes}',
+                                  '${widget.bio.likes.length}',
                                   style:
                                       GoogleFonts.sourceSansPro(fontSize: 17),
                                 )

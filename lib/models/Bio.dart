@@ -8,10 +8,9 @@ class Bio {
   Timestamp releaseDate;
   String heroName, dates, picture, source, profile_photo, honour;
   int index;
-  int likes;
+  List likes;
   var text;
 
-  bool isLiked;
   List quotes = [];
 
   Bio({
@@ -21,7 +20,6 @@ class Bio {
     this.text,
     this.picture,
     this.index,
-    this.isLiked,
     this.source,
     this.quotes,
     this.profile_photo,
@@ -37,26 +35,12 @@ class Bio {
     return rday + ' ' + rmonth + ' ' + ryear;
   }
 
-  getLikes() async {
-    this.likes = await FirebaseService()
-        .likesReference
-        .get()
-        .then((value) => value.docs[index].get('likes'));
-  }
+  updateLikes() {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  changeLikes(Bio bio) async {
-    try {
-      await FirebaseService()
-          .likesReference
-          .doc('biyography${bio.index + 1}')
-          .update(
-        {
-          'likes': bio.likes,
-        },
-      );
-    } catch (e) {
-      print(e);
-    }
+    firestore.collection('likes').doc('biyography${index + 1}').update({
+      'likes': this.likes,
+    });
   }
 
   shareBiyography(BuildContext context) {

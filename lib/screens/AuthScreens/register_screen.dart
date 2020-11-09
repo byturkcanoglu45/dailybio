@@ -228,7 +228,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           try {
                             Provider.of<AuthService>(context, listen: false)
                                 .registerEmail(email, password, nickname);
-                            if (loggedIn) {
+                            if (auth.currentUser != null) {
                               Navigator.popAndPushNamed(context, 'bios');
                             }
                           } catch (e) {

@@ -37,12 +37,12 @@ class _BioDrawerState extends State<BioDrawer> {
                     image: AssetImage('assets/profile_logo.png'),
                   ),
                 ),
-                loggedIn
+                auth.currentUser != null
                     ? Wrap(
                         children: [
                           ListTile(
                             title: Text(
-                              'Hoşgeldin ${Provider.of<AuthService>(context, listen: false).auth.currentUser.displayName ?? 'Misafir'}',
+                              'Hoşgeldin ${auth.currentUser.displayName ?? 'Misafir'}',
                               style: kGoogleFont.copyWith(
                                 fontSize: 18,
                                 color: Color(0xffecf4f3),

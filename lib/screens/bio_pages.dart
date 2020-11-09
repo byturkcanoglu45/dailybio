@@ -33,7 +33,6 @@ class _BioPagesState extends State<BioPages> {
   void initState() {
     super.initState();
     showDailyAtTime();
-    signIn();
     AdvertServices().showIntersitial();
 
     rateMyApp.init().then((_) {
@@ -86,13 +85,6 @@ class _BioPagesState extends State<BioPages> {
   //The service that takes data from database.
   FirebaseService firebaseService = FirebaseService();
 
-  //Sign in when app open.
-  signIn() async {
-    await Provider.of<AuthService>(context, listen: false).signInAnonymously();
-    print(Provider.of<AuthService>(context, listen: false).auth.currentUser);
-    await DatabaseService().getSettings();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<AuthService>(
@@ -114,7 +106,7 @@ class _BioPagesState extends State<BioPages> {
                     controller: pageController,
                     itemCount: snapshot.data[1].size ?? 0,
                     itemBuilder: (context, index) {
-                      print("Idsi "+snapshot.data[1].docs[index].id);
+                      print("Idsi " + snapshot.data[1].docs[index].id);
                       return Biography(
                         bio: Bio(
                           dates: snapshot.data[1].docs[index].get('dates'),
@@ -125,11 +117,6 @@ class _BioPagesState extends State<BioPages> {
                           text: snapshot.data[1].docs[index].get('text'),
                           picture: snapshot.data[1].docs[index].get('picture'),
                           index: snapshot.data[1].docs[index].get('index'),
-                          isLiked: provider.user.liked_biographies.contains(
-                            snapshot.data[1].docs[index].get('index'),
-                          )
-                              ? true
-                              : false,
                           source: snapshot.data[1].docs[index].get('source'),
                           quotes: snapshot.data[1].docs[index].get('quotes'),
                           likes: snapshot.data[0].docs[index].get('likes'),

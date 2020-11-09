@@ -56,12 +56,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                 ),
-                loggedIn
+                auth.currentUser != null
                     ? Container(
                         margin: EdgeInsets.only(top: deviceHeight * 1.9 / 10),
                         alignment: Alignment.topCenter,
                         child: Text(
-                          'Hoşgeldin ${Provider.of<AuthService>(context, listen: false).auth.currentUser.displayName ?? 'Misafir'}',
+                          'Hoşgeldin ${auth.currentUser.displayName}',
                           style: kGoogleFont.copyWith(
                             fontSize: 22,
                             color: Colors.black,
