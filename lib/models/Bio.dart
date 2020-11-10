@@ -35,10 +35,10 @@ class Bio {
     return rday + ' ' + rmonth + ' ' + ryear;
   }
 
-  updateLikes() {
+  updateLikes() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-    firestore.collection('likes').doc('biyography${index + 1}').update({
+    await firestore.collection('likes').doc('biyography${index + 1}').update({
       'likes': this.likes,
     });
   }

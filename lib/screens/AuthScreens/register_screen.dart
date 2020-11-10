@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dailybio/services/firebase_auth.dart';
 import 'package:dailybio/widgets/SnackBar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
@@ -18,6 +21,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String email, password, second_password, nickname, errorMessage;
   double deviceHeight;
   bool isSeems = false;
+  bool isSeemsSecond = false;
   @override
   Widget build(BuildContext context) {
     deviceHeight = MediaQuery.of(context).size.height;
@@ -177,13 +181,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         onChanged: (passwordValue) {
                           second_password = passwordValue;
                         },
-                        obscureText: isSeems,
+                        obscureText: isSeemsSecond,
                         decoration: InputDecoration(
                           suffixIcon: IconButton(
                               icon: AnimatedContainer(
                                 duration: Duration(seconds: 1),
                                 child: Icon(
-                                  isSeems
+                                  isSeemsSecond
                                       ? FontAwesomeIcons.eyeSlash
                                       : FontAwesomeIcons.eye,
                                   color: Color(0xff006a71),
@@ -191,7 +195,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                               onPressed: () {
                                 setState(() {
-                                  isSeems = !isSeems;
+                                  isSeemsSecond = !isSeemsSecond;
                                 });
                               }),
                           enabledBorder: OutlineInputBorder(
@@ -221,17 +225,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           Radius.elliptical(12, 8),
                         )),
                     child: FlatButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (email != null &&
                             password != null &&
                             second_password != null) {
                           try {
-                            Provider.of<AuthService>(context, listen: false)
+                            await Provider.of<AuthService>(context,
+                                    listen: false)
                                 .registerEmail(email, password, nickname);
-                            if (auth.currentUser != null) {
-                              Navigator.popAndPushNamed(context, 'bios');
+                          } on FirebaseAuthException catch (e) {
+                            errorMessage = 'Bir hata meydana geldi.';
+                            if (e.message ==
+                                'The email address is already in use by another account.') {
+                              errorMessage =
+                                  "Bu emaile sahip bir hesap zaten bulunmakta!";
+                            } else if (e.message ==
+                                "The email address is badly formatted.") {
+                              errorMessage =
+                                  "Böyle bir email bulunmamaktadır yok";
                             }
-                          } catch (e) {
                             switch (e.code) {
                               case 'email-already-in-use':
                                 errorMessage =
@@ -248,6 +260,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     "Bilinmeyen bir hata meydana geldi.";
                             }
                             snack_bar(errorMessage, _scaffoldKey);
+                            Future.delayed(Duration(seconds: 2));
+                            if (auth.currentUser != null) {
+                              Navigator.popAndPushNamed(context, 'bios');
+                            }
                           }
                         } else if (password != second_password) {
                           print('Şifreler aynı değil !');

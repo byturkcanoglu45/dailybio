@@ -108,6 +108,7 @@ class _BiographyState extends State<Biography>
                                           .contains(auth.currentUser.uid)) {
                                         widget.bio.likes
                                             .remove(auth.currentUser.uid);
+
                                         // update likes
                                         setState(() {});
                                       } else {
@@ -116,6 +117,7 @@ class _BiographyState extends State<Biography>
                                         //update likes
                                         setState(() {});
                                       }
+                                      widget.bio.updateLikes();
                                     } else {
                                       Navigator.pushNamed(context, 'register');
                                     }

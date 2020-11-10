@@ -32,7 +32,9 @@ class _BioPagesState extends State<BioPages> {
   @override
   void initState() {
     super.initState();
-    showDailyAtTime();
+    DatabaseService().getSettings();
+
+    if (notification_time != 0) showDailyAtTime();
     AdvertServices().showIntersitial();
 
     rateMyApp.init().then((_) {

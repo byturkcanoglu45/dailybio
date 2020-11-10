@@ -29,11 +29,10 @@ class AuthService with ChangeNotifier {
   }
 
   registerEmail(String email, String password, String name) async {
-    var firebaseUser = await auth.createUserWithEmailAndPassword(
-        email: email, password: password);
-    firebaseUser.user.updateProfile(displayName: name);
+    await auth.createUserWithEmailAndPassword(email: email, password: password)
+      ..user.updateProfile(displayName: name);
+
     print('auth' + auth.currentUser.toString());
-    print('firebase : ' + firebaseUser.user.toString());
 
     notifyListeners();
   }

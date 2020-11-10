@@ -378,6 +378,36 @@ class _SettingsPageState extends State<SettingsPage> {
                             )),
                           ),
                         ),
+                        Container(
+                          height: 30,
+                          width: 50,
+                          decoration: BoxDecoration(
+                            color: Color(0xff68b0ab),
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                            border: Border.all(
+                              color: Color(0xff68b0ab),
+                              style: BorderStyle.solid,
+                            ),
+                          ),
+                          child: GestureDetector(
+                            onTap: () {
+                              notification_time = 0;
+                              setState(() {});
+                              DatabaseService().saveSettings();
+                            },
+                            child: Center(
+                                child: Text(
+                              'Kapat',
+                              style: kGoogleFont.copyWith(
+                                  color: notification_time == 0
+                                      ? Colors.brown
+                                      : Colors.white,
+                                  fontSize: 16),
+                            )),
+                          ),
+                        ),
                       ],
                     ),
                     leading: Container(

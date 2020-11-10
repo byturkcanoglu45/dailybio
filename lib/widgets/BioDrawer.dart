@@ -173,6 +173,16 @@ class _BioDrawerState extends State<BioDrawer> {
             leading: Icon(FontAwesomeIcons.cogs),
             title: Text('Ayarlar'),
           ),
+          if (auth.currentUser != null)
+            ListTile(
+              onTap: () async {
+                await auth.signOut();
+                Navigator.pop(context);
+                setState(() {});
+              },
+              leading: Icon(FontAwesomeIcons.signOutAlt),
+              title: Text('Çıkış Yap'),
+            ),
         ],
       ),
     );

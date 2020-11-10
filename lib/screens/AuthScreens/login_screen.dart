@@ -152,6 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               Navigator.popAndPushNamed(context, 'bios');
                             }
                           } catch (e) {
+                            errorMessage = 'Bir hata meydana geldi.';
                             switch (e.code) {
                               case 'invalid-email':
                                 errorMessage =
